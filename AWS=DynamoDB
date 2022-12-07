@@ -33,6 +33,20 @@ aws dynamodb create-table \
         AttributeName=Id,AttributeType=S \
         AttributeName=ReplyDateTime,AttributeType=S \
     --key-schema \
+    
+    
+    
+    
+    aws dynamodb query \
+    --table-name Reply \
+    --key-condition-expression 'Id = :Id' \
+    --filter-expression 'PostedBy = :user' \
+    --expression-attribute-values '{
+        ":Id" : {"S": "Amazon DynamoDB#DynamoDB Thread 1"},
+        ":user" : {"S": "User B"}
+    }' \
+    --return-consumed-capacity TOTAL
+
         AttributeName=Id,KeyType=HASH \
         AttributeName=ReplyDateTime,KeyType=RANGE \
     --provisioned-throughput \
