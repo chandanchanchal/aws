@@ -72,13 +72,15 @@ aws dynamodb query \
     
     
     
-    aws dynamodb query \
+aws dynamodb query \
     --table-name Reply \
-    --key-condition-expression 'Id = :Id and ReplyDateTime > :ts' \
+    --key-condition-expression 'Id = :Id' \
+    --filter-expression 'PostedBy = :user' \
     --expression-attribute-values '{
         ":Id" : {"S": "Amazon DynamoDB#DynamoDB Thread 1"},
-        ":ts" : {"S": "2015-09-21"}
+        ":user" : {"S": "User B"}
     }' \
     --return-consumed-capacity TOTAL
+
 
 
