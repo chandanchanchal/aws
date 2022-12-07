@@ -55,4 +55,16 @@ aws dynamodb query \
         ":Id" : {"S": "Amazon DynamoDB#DynamoDB Thread 1"}
     }' \
     --return-consumed-capacity TOTAL
+    
+    
+    
+    aws dynamodb query \
+    --table-name Reply \
+    --key-condition-expression 'Id = :Id and ReplyDateTime > :ts' \
+    --expression-attribute-values '{
+        ":Id" : {"S": "Amazon DynamoDB#DynamoDB Thread 1"},
+        ":ts" : {"S": "2015-09-21"}
+    }' \
+    --return-consumed-capacity TOTAL
+
 
