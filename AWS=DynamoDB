@@ -42,3 +42,8 @@ aws dynamodb wait table-exists --table-name ProductCatalog && \
 aws dynamodb wait table-exists --table-name Reply && \
 aws dynamodb wait table-exists --table-name Forum && \
 aws dynamodb wait table-exists --table-name Thread
+
+wget https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/samples/sampledata.zip
+
+unzip sampledata.zip
+
