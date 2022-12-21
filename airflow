@@ -12,3 +12,17 @@ from airflow.providers.amazon.aws.operators.glue_crawler import AwsGlueCrawlerOp
 # Custom Operators deployed as Airflow plugins
 from awsairflowlib.operators.aws_copy_s3_to_redshift import CopyS3ToRedshiftOperator
 
+S3_BUCKET_NAME = "airflow-yourname-bucket"  
+  
+default_args = {  
+    'owner': 'airflow',
+    'depends_on_past': False,
+    'start_date': airflow.utils.dates.days_ago(1),
+    'retries': 0,
+    'retry_delay': timedelta(minutes=2),
+    'provide_context': True,
+    'email': ['airflow@example.com'],
+    'email_on_failure': False,
+    'email_on_retry': False
+}
+
