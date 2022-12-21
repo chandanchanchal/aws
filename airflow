@@ -35,3 +35,70 @@ dag = DAG(
     schedule_interval='0 3 * * *'
 )
 
+
+s3_sensor = S3PrefixSensor(  
+  task_id='s3_sensor',  
+  bucket_name=S3_BUCKET_NAME,  
+  prefix='data/raw/green',  
+  dag=dag  
+)
+
+
+aws glue create-crawler \
+--name airflow-workshop-raw-green-crawler \
+--role arn\:aws\:iam::1111111111111111\:role/AWSGlueServiceRoleDefault \
+--database-name default \
+--targets "{\"S3Targets\":[{\"Path\":\"s3://airflow-yourname-bucket/data/raw/green\"}]}"
+
+
+
+config = {"Name": "airflow-workshop-raw-green-crawler"}
+
+glue_crawler = AwsGlueCrawlerOperator(
+    task_id="glue_crawler",
+    config=config,
+    dag=dag)
+
+
+
+glue_task = AwsGlueJobOperator(  
+    task_id="glue_task",  
+    job_name='nyc_raw_to_transform',  
+    iam_role_name='AWSGlueServiceRoleDefault',  
+    dag=dag) 
+
+
+
+execution_date = "{{ execution_date }}"  
+  
+JOB_FLOW_OVERRIDES = {
+    "Name": "Data-Pipeline-" + execution_date,
+    "ReleaseLabel": "emr-5.29.0",
+    "LogUri": "s3://{}/logs/emr/".format(S3_BUCKET_NAME),
+    "Instances": {
+        "InstanceGroups": [
+            {
+                "Name": "Master nodes",
+                "Market": "ON_DEMAND",
+                "InstanceRole": "MASTER",
+                "InstanceType": "m5.xlarge",
+                "InstanceCount": 1
+            },
+            {
+                "Name": "Slave nodes",
+                "Market": "ON_DEMAND",
+                "InstanceRole": "CORE",
+                "InstanceType": "m5.xlarge",
+                "InstanceCount": 2
+            }
+        ],
+        "TerminationProtected": False,
+        "KeepJobFlowAliveWhenNoSteps": True
+    }
+}
+
+
+s3_sensor >> glue_crawler >> glue_task >> cluster_creator >> step_adder >> step_checker >> cluster_remover >> copy_agg_to_redshift
+
+
+
