@@ -1,0 +1,33 @@
+{
+  "Comment": "A Hello World example of the Amazon States Language using Pass states",
+  "StartAt": "Invoke Lambda function",
+  "States": {
+    "Invoke Lambda function": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:us-east-1:027411030380:function:HelloWorld",
+      "InputPath": "$",
+      "Next": "Choice State"
+    },
+    "Choice State": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$",
+          "StringMatches": "*Chandan*",
+          "Next": "Is Teacher"
+        }
+      ],
+      "Default": "Not Teacher"
+    },
+    "Is Teacher": {
+      "Type": "Pass",
+      "Result": "Woohoo!",
+      "End": true
+    },
+    "Not Teacher": {
+      "Type": "Fail",
+      "Error": "ErrorCode",
+      "Cause": "Chandan the teacher wasn't found in the output of the Lambda Function"
+    }
+  }
+}
