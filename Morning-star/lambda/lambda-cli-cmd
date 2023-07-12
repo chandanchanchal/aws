@@ -36,5 +36,19 @@ def lambda_handler(event, context):
     return event['key1']
     #raise Exception('something went wrong')
 
+import json
+###############################################------lambda-for----API-GATEWAY---##########################################################
+def lambda_handler(event, context):
+    print(event)
+    body = "Hello from Lambda!"
+    statusCode = 200
+    return {
+        "statusCode": statusCode,
+        "body": json.dumps(body),
+        "headers": {
+            "Content-Type": "application/json"
+        }
+    }
+
 
 
